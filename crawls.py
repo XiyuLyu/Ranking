@@ -68,8 +68,7 @@ def getCollection():
 
 
             try :
-                
-                ctg = page['response']['venues'][0]['categories']
+                ctg = page
                 countc = countc + 1
                 result.append([ctg, docId]) 
                 #print ctg , docId
@@ -80,6 +79,9 @@ def getCollection():
                     print countc, ctg
                     saveItem(result,'result_of_category{}_{}.pkl'.format(countc,i))
                     saveItem(error,'error_of_category{}_{}.pkl'.format(countnc,i))
+                    result = []
+                    error = []
+                    
             except :
                 # print i
                 countnc = countnc + 1
