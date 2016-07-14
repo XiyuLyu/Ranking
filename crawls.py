@@ -68,8 +68,9 @@ def getCollection():
 
 
             try :
-                countc = countc + 1
+                
                 ctg = page['response']['venues'][0]['categories']
+                countc = countc + 1
                 result.append([ctg, docId]) 
                 #print ctg , docId
                 # print i
