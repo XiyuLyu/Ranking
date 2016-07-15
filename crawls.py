@@ -6,6 +6,7 @@ import os
 from collections import defaultdict 
 import urllib
 from datetime import date
+import time 
 root = '/Users/cici/Desktop/DataAnalysis/'
 
 
@@ -24,7 +25,7 @@ def getContexts():
 
     return addMap
 
-def getCollection():
+def getCollection(start_index, istart):
     addMap = getContexts()
     fn = os.path.join(root, 'Data', 'new_collection_part1.csv')
     lines = open(fn, 'r').readlines()
@@ -42,9 +43,13 @@ def getCollection():
     today= date.today()
     v = today.strftime('%Y%m%d')
     cnr = []        
-    countc = 0
     countnc = 0
-    for i, line in enumerate(lines):
+    countc = start_index 
+
+    print 'countc restarting from {}'.format(countc)
+    print 'i restartin from {}'.format(istart + 1)
+    for i in range(istart+1, len(lines)):
+        line = lines[i]
         # print i 
         tmp = line.strip().split(',')
         if len(tmp) == 4:
@@ -63,12 +68,17 @@ def getCollection():
                     '&v=' + v +\
                     '&near=' + near +\
                     '&query=' + query
+
+            #time.sleep(0.8)
             resp = urllib.urlopen(q)
             page = json.loads(resp.read())
-
-
             try :
                 ctg = page
+                if len(page['response']) == 0 :
+                    time.sleep(2000)
+                    resp = urllib.urlopen(q)
+                    page = json.loads(resp.read())
+
                 countc = countc + 1
                 result.append([ctg, docId]) 
                 #print ctg , docId
@@ -81,8 +91,10 @@ def getCollection():
                     saveItem(error,'error_of_category{}_{}.pkl'.format(countnc,i))
                     result = []
                     error = []
-                    
-            except :
+
+
+            except:
+
                 # print i
                 countnc = countnc + 1
                 ctg = ''
